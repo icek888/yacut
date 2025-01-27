@@ -1,6 +1,6 @@
 import re
 
-from flask import render_template, request, flash, redirect
+from flask import (render_template, request, flash, redirect, url_for)
 
 from .forms import URLForm
 from .models import db, URLMap
@@ -20,15 +20,17 @@ def index():
             return render_template('index.html', form=form), 200
 
         if custom_id:
-            if len(custom_id) > 16 or not re.match(
-                    r'^[A-Za-z0-9]+$', custom_id):
+            if len(custom_id) > 16 or not re.match(r'^[A-Za-z0-9]+$',
+                                                   custom_id):
                 form.custom_id.errors = [
-                    'Указано недопустимое имя для короткой ссылки']
+                    'Указано недопустимое имя для короткой ссылки'
+                ]
                 return render_template('index.html', form=form), 200
 
             if URLMap.query.filter_by(short=custom_id).first():
                 form.custom_id.errors = [
-                    'Предложенный вариант короткой ссылки уже существует.']
+                    'Предложенный вариант короткой ссылки уже существует.'
+                ]
                 return render_template('index.html', form=form), 200
 
             short = custom_id
@@ -39,8 +41,11 @@ def index():
         db.session.add(url_map)
         db.session.commit()
 
-        return render_template('index.html', form=form, short=short), 200
+        # Генерируем полный URL на основе текущего хоста (url_for + _external=True).
+        short_link = url_for('redirect_short', short_id=short, _external=True)
+        return render_template('index.html', form=form, short_link=short_link), 200
 
+    # GET-запрос
     return render_template('index.html', form=form), 200
 
 

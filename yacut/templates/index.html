@@ -47,11 +47,11 @@
 {% endif %}
 {% endwith %}
 
-{% if short %}
+{% if short_link %}
 <div class="container text-center mt-3">
   <p>Ваша короткая ссылка:</p>
-  <a href="http://localhost/{{ short }}">
-    http://localhost/{{ short }}
+  <a href="{{ short_link }}">
+    {{ short_link }}
   </a>
 </div>
 {% endif %}

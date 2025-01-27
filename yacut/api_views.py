@@ -46,7 +46,7 @@ def create_short_link():
 
     return jsonify({
         'url': url_map.original,
-        'short_link': f'http://localhost/{url_map.short}'
+        'short_link': f"{request.host_url}{url_map.short}"
     }), 201
 
 
