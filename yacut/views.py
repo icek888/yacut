@@ -41,9 +41,9 @@ def index():
         db.session.add(url_map)
         db.session.commit()
 
-        # Генерируем полный URL на основе текущего хоста (url_for + _external=True).
         short_link = url_for('redirect_short', short_id=short, _external=True)
-        return render_template('index.html', form=form, short_link=short_link), 200
+        return render_template(
+            'index.html', form=form, short_link=short_link), 200
 
     # GET-запрос
     return render_template('index.html', form=form), 200
