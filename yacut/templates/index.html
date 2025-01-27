@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="text-center mt-5">
+  <span style="color:red;">Ya</span>Cut
+</h1>
+<p class="text-center my-4">
+  Создайте короткую ссылку автоматически или предложите свой вариант
+</p>
+
+<div class="container">
+  <div class="row my-3">
+    <div class="col-sm"></div>
+    <div class="col-sm">
+      <form method="POST">
+        {{ form.csrf_token }}
+        <div class="mb-3">
+          {{ form.original_link(class_="form-control form-control-lg", placeholder="Длинная ссылка") }}
+          {% for err in form.original_link.errors %}
+            <p style="color:red;">{{ err }}</p>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.custom_id(class_="form-control form-control-lg", placeholder="Ваш вариант короткой ссылки") }}
+          {% for err in form.custom_id.errors %}
+            <p style="color:red;">{{ err }}</p>
+          {% endfor %}
+        </div>
+
+        {{ form.submit(class_="btn btn-primary", value="Создать") }}
+      </form>
+    </div>
+    <div class="col-sm"></div>
+  </div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  <div class="container text-center mt-3">
+    <ul>
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+{% endwith %}
+
+{% if short %}
+<div class="container text-center mt-3">
+  <p>Ваша короткая ссылка:</p>
+  <a href="http://localhost/{{ short }}">
+    http://localhost/{{ short }}
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}
