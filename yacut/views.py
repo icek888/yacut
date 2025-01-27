@@ -43,7 +43,6 @@ def index():
         db.session.add(url_map)
         db.session.commit()
 
-        # Генерируем полный URL, чтобы отображать его пользователю
         short_link = url_for('redirect_short', short_id=short, _external=True)
 
         return render_template('index.html',
