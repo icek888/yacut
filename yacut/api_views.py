@@ -17,24 +17,27 @@ def create_short_link():
         return jsonify({'message': '"url" является обязательным полем!'}), 400
 
     original = data['url']
-    custom_id = data.get('custom_id', None)
+    custom_id = data.get('custom_id')
 
     if not custom_id:
         short = _generate_unique_short()
     else:
         if len(custom_id) > 16:
-            return jsonify(
-                    {'message': 'Указано недопустимое имя для короткой ссылки'}
-                ), 400
+            return jsonify({
+                'message': 'Указано недопустимое имя для короткой ссылки'
+            }), 400
+
         if not re.match(r'^[A-Za-z0-9]+$', custom_id):
-            return jsonify(
-                    {'message': 'Указано недопустимое имя для короткой ссылки'}
-                ), 400
+            return jsonify({
+                'message': 'Указано недопустимое имя для короткой ссылки'
+            }), 400
+
         if URLMap.query.filter_by(short=custom_id).first():
-            return jsonify(
-                    {'message':
-                    'Предложенный вариант короткой ссылки уже существует.'}
-                ), 400
+            return jsonify({
+                'message': 'Предложенный вариант '
+                'короткой ссылки уже существует.'
+            }), 400
+
         short = custom_id
 
     url_map = URLMap(original=original, short=short)
