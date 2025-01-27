@@ -4,7 +4,7 @@ from flask import request, jsonify
 
 from . import app, db
 from .models import URLMap
-from .utils import get_unique_short_id
+from .utils import generate_unique_short
 
 
 @app.route('/api/id/', methods=['POST'])
@@ -20,7 +20,7 @@ def create_short_link():
     custom_id = data.get('custom_id')
 
     if not custom_id:
-        short = _generate_unique_short()
+        short = generate_unique_short()
     else:
         if len(custom_id) > 16:
             return jsonify({
@@ -55,11 +55,5 @@ def get_original_link(short_id):
     url_map = URLMap.query.filter_by(short=short_id).first()
     if not url_map:
         return jsonify({'message': 'Указанный id не найден'}), 404
+
     return jsonify({'url': url_map.original}), 200
-
-
-def _generate_unique_short():
-    short = get_unique_short_id()
-    while URLMap.query.filter_by(short=short).first():
-        short = get_unique_short_id()
-    return short

@@ -1,11 +1,13 @@
 import re
 
-from flask import (render_template, request, flash, redirect, url_for)
+from flask import (
+    render_template, request, flash, redirect, url_for
+)
 
+from . import app, db
 from .forms import URLForm
-from .models import db, URLMap
-from .utils import get_unique_short_id
-from . import app
+from .models import URLMap
+from .utils import generate_unique_short
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -35,17 +37,18 @@ def index():
 
             short = custom_id
         else:
-            short = _generate_unique_short()
+            short = generate_unique_short()
 
         url_map = URLMap(original=original, short=short)
         db.session.add(url_map)
         db.session.commit()
 
+        # Генерируем полный URL, чтобы отображать его пользователю
         short_link = url_for('redirect_short', short_id=short, _external=True)
-        return render_template(
-            'index.html', form=form, short_link=short_link), 200
 
-    # GET-запрос
+        return render_template('index.html',
+                               form=form, short_link=short_link), 200
+
     return render_template('index.html', form=form), 200
 
 
@@ -53,10 +56,3 @@ def index():
 def redirect_short(short_id):
     url_map = URLMap.query.filter_by(short=short_id).first_or_404()
     return redirect(url_map.original, code=302)
-
-
-def _generate_unique_short():
-    short = get_unique_short_id()
-    while URLMap.query.filter_by(short=short).first():
-        short = get_unique_short_id()
-    return short
