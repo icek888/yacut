@@ -37,6 +37,5 @@ def internal_error(e):
     Обработчик внутренней ошибки сервера (500).
     Возвращаем JSON с 'error', но можно отдать и шаблон, если нужно.
     """
-    return jsonify(
-        {'error': 'Internal Server Error'}
-        ), HTTPStatus.INTERNAL_SERVER_ERROR
+    return jsonify({'error': 'Internal Server Error'}
+                   ), HTTPStatus.INTERNAL_SERVER_ERROR

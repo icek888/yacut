@@ -1,1 +1,9 @@
 Single-database configuration for Flask.
+
+Main commands for migrations
+
+Run in this order:
+
+flask db init
+flask db migrate
+flask db upgrade
